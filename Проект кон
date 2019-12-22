@@ -50,13 +50,9 @@ def calculate():
         result = math.cos(operand1)
     if operation == 'tan':
         result = math.tan(operand1)
-    if operation == '+' and '=':
+    if operation == '+=':
         result = operand1 + operand1
-    if operation == '-' and '=':
-        result = operand1 - operand1
-    if operation == '/' and '=':
-        result = operand1 / operand1
-    if operation == '*' and '=':
+    if operation == '*=':
         result = operand1 * operand1
 
     
@@ -93,7 +89,7 @@ def click(text):
                 stack.append(label['text'])
                 stack.append(text)
                 activeStr = ''
-                label.configure(text='0')
+               
         
 # внешний вид
 label = Label(root, text='0', width=45)
