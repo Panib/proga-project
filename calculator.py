@@ -7,43 +7,44 @@ from decimal import *
 import math
 def calculate(stack):
     ''' в данной функции выбирается число и действие, которое с ним производится '''
-    # global stack
-    # global label
+
     result = 0
-    operand2 = Decimal(stack.pop())
-    operation = stack.pop()
-    operand1 = Decimal(stack.pop())
+    # print(stack)
+    if len(stack) > 2:
+        operand2 = Decimal(stack.pop())
+        operation = stack.pop()
+        operand1 = Decimal(stack.pop())
+        if operation == '+':
+            result = operand1 + operand2
+        if operation == '-':
+            result = operand1 - operand2
+        if operation == '/':
+            result = operand1 / operand2
+        if operation == '*':
+            result = operand1 * operand2
 
-    if operation == '+':
-        result = operand1 + operand2
-    if operation == '-':
-        result = operand1 - operand2
-    if operation == '/':
-        result = operand1 / operand2
-    if operation == '*':
-        result = operand1 * operand2
-    if operation == 'log10':
-        result = math.log10(operand1)
-    if operation == '^3':
-        result = operand1 * operand1 * operand1
-    if operation == '^2':
-        result = operand1 * operand1
-    if operation == 'sin':
-        result = math.sin(operand1)
-    if operation == 'cos':
-        result = math.cos(operand1)
-    if operation == 'tan':
-        result = math.tan(operand1)
-    if operation == '+=':
-        result = operand1 + operand1
-    if operation == '*=':
-        result = operand1 * operand1
-
-    
-    # в операциях sin cos tan используются радианы
-    # label.configure(text=str(result))
+    elif len(stack) == 2:
+        operation = stack.pop()
+        operand = Decimal(stack.pop())
+        if operation == 'log10':
+            result = math.log10(operand)
+        if operation == '^3':
+            result = operand * operand * operand
+        if operation == '^2':
+            result = operand * operand
+                    
+        # в операциях sin cos tan используются радианы
+        if operation == 'sin':
+            result = math.sin(operand)
+        if operation == 'cos':
+            result = math.cos(operand)
+        if operation == 'tan':
+            result = math.tan(operand)
+    else:
+        return Decimal(stack.pop())
     return result
 
+unary = ('log10', '^3', '^2', 'sin', 'cos', 'tan')
 # функция обработки нажимаемой клавиши
 def click(text):
     '''функция обработки нажимаемой клавиши'''
@@ -53,29 +54,32 @@ def click(text):
         stack.clear()
         activeStr = ''
         label.configure(text='0')
-    elif '0' <= text <= '9':
-        activeStr += text
-        label.configure(text=activeStr)
-    elif text == '.':
-        if activeStr.find('.') == -1:
+    elif activeStr != 'Error':
+        if '0' <= text <= '9':
             activeStr += text
             label.configure(text=activeStr)
-    else:
-        if len(stack) >= 2:
-            stack.append(label['text'])
-            value = calculate(stack)
-            label.configure(text=str(value))
-            stack.clear()
-            stack.append(label['text'])
-            activeStr = ''
-            if text != '=':
-                stack.append(text)
+        elif text == '.':
+            if activeStr.find('.') == -1:
+                activeStr += text
+                label.configure(text=activeStr)
+        elif text ==' ':
+            pass
         else:
-            if text != '=':
-                stack.append(label['text'])
+            stack.append(label['text'])
+            if text in unary:
+                stack.append(text)
+            if text == '=' or len(stack) > 2 or text in unary:
+                value = calculate(stack)
+                label.configure(text=value)
+                stack.clear()
+                if text !=  '=' and not text in unary:
+                    stack.append(str(value))
+                    stack.append(text)
+                activeStr = ''
+            else:
                 stack.append(text)
                 activeStr = ''
-
+                
 if __name__ == '__main__':
     
     # создаем окно с надписью "Калькулятор"

@@ -10,5 +10,9 @@ class Test(unittest.TestCase):
     self.assertEqual(calculate(['25', '*', '2']), 50)
   def test5(self):
     self.assertEqual(calculate(['15', '/', '15']), 1)
+  def test_unary_log10(self):
+    self.assertAlmostEqual(calculate(['80', 'log10']), 1.9030899869919435856412166841735)
+  def test_cos(self):
+    self.assertAlmostEqual(calculate(['3.14', 'cos']), -0.999998731727539545285)
 if __name__ == '__main__':
     unittest.main()
